@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Franco Mercado — Front-End Software Engineer</title>
+  <meta name="description" content="Franco Mercado — Front-End Software Engineer specialized in React & TypeScript. Building scalable, accessible web applications at Mercado Libre.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════
+       CSS VARIABLES
+    ═══════════════════════════════════════ */
+    :root {
+      --bg-primary: #0c0a0d;
+      --bg-secondary: #13111a;
+      --bg-card: #1a1722;
+      --bg-card-hover: #211d2c;
+      --accent: #8B2252;
+      --accent-light: #A8385E;
+      --accent-soft: rgba(139, 34, 82, 0.15);
+      --accent-glow: rgba(139, 34, 82, 0.4);
+      --gold: #c9a96e;
+      --gold-soft: rgba(201, 169, 110, 0.15);
+      --text-primary: #ede8e3;
+      --text-secondary: #8a8490;
+      --text-dim: #5a5660;
+      --border: rgba(255, 255, 255, 0.06);
+      --border-light: rgba(255, 255, 255, 0.1);
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Sora', system-ui, sans-serif;
+      --nav-height: 72px;
+    }
+
+    /* ═══════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: var(--nav-height);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 15px;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    /* ═══════════════════════════════════════
+       NOISE TEXTURE OVERLAY
+    ═══════════════════════════════════════ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px;
+    }
+
+    /* ═══════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(24px, 5vw, 64px);
+      transition: background 0.4s, box-shadow 0.4s, backdrop-filter 0.4s;
+    }
+
+    .nav.scrolled {
+      background: rgba(12, 10, 13, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--text-primary);
+    }
+
+    .nav-logo span {
+      color: var(--accent-light);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent-light);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Language toggle */
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .lang-toggle button {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .lang-toggle button.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .lang-toggle button:hover:not(.active) {
+      color: var(--text-primary);
+    }
+
+    /* Hamburger */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      z-index: 1002;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .nav-hamburger.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .nav-hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-hamburger.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Mobile overlay */
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(12, 10, 13, 0.97);
+      backdrop-filter: blur(30px);
+      z-index: 1001;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+    }
+
+    .nav-overlay.active {
+      display: flex;
+    }
+
+    .nav-overlay a {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: color 0.3s;
+    }
+
+    .nav-overlay a:hover {
+      color: var(--accent-light);
+    }
+
+    .nav-overlay .lang-toggle {
+      margin-top: 12px;
+    }
+
+    /* ═══════════════════════════════════════
+       HERO SECTION
+    ═══════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--nav-height) + 40px) clamp(24px, 5vw, 64px) 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      top: -100px;
+      right: -150px;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: float 12s ease-in-out infinite;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 34, 82, 0.2) 0%, transparent 70%);
+      bottom: -50px;
+      left: -100px;
+      filter: blur(60px);
+      opacity: 0.3;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, -20px); }
+    }
+
+    .hero-content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+
+    .hero-photo-wrapper {
+      margin: 0 auto 40px;
+      width: 200px;
+      height: 200px;
+      position: relative;
+    }
+
+    .hero-photo-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--gold), var(--accent-light));
+      opacity: 0.8;
+      animation: ring-rotate 8s linear infinite;
+    }
+
+    @keyframes ring-rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .hero-photo-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      border: 1px solid var(--accent-soft);
+    }
+
+    .hero-photo {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      position: relative;
+      z-index: 1;
+      border: 3px solid var(--bg-primary);
+    }
+
+    .hero-greeting {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.3s;
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.5s;
+    }
+
+    .hero-name .accent {
+      color: var(--accent-light);
+    }
+
+    .hero-title {
+      font-family: var(--font-body);
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-weight: 300;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      letter-spacing: 0.03em;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.7s;
+    }
+
+    .hero-location {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.85s;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 1s;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-light);
+      box-shadow: 0 8px 32px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent-light);
+      color: var(--accent-light);
+      transform: translateY(-2px);
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 1.3s;
+    }
+
+    .scroll-indicator span {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, var(--accent-light), transparent);
+      animation: scroll-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scroll-pulse {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.3; transform: scaleY(0.6); }
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION STYLES
+    ═══════════════════════════════════════ */
+    .section {
+      padding: 100px clamp(24px, 5vw, 64px);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: 56px;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 600;
+      line-height: 1.15;
+    }
+
+    .section-divider {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(to right, var(--accent), transparent);
+      margin-top: 20px;
+    }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══════════════════════════════════════
+       ABOUT SECTION
+    ═══════════════════════════════════════ */
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .about-text p:first-child::first-letter {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      float: left;
+      line-height: 0.85;
+      margin-right: 8px;
+      margin-top: 4px;
+      color: var(--accent-light);
+      font-weight: 600;
+    }
+
+    .about-details {
+      display: grid;
+      gap: 24px;
+    }
+
+    .about-detail-card {
+      padding: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .about-detail-card:hover {
+      border-color: var(--accent-soft);
+      transform: translateX(4px);
+    }
+
+    .about-detail-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    .about-detail-value {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* ═══════════════════════════════════════
+       SKILLS SECTION
+    ═══════════════════════════════════════ */
+    #skills {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 32px;
+    }
+
+    .skill-group {
+      padding: 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .skill-group:hover {
+      border-color: rgba(139, 34, 82, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .skill-group-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .skill-group-title::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 2px;
+      opacity: 0.5;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skill-tag {
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+
+    .skill-tag:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    /* ═══════════════════════════════════════
+       EXPERIENCE TIMELINE
+    ═══════════════════════════════════════ */
+    .timeline {
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), var(--border), transparent);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 48px;
+    }
+
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -36px;
+      top: 8px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: var(--bg-primary);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .timeline-item:hover .timeline-dot {
+      background: var(--accent);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .timeline-item:first-child .timeline-dot {
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .timeline-dates {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--accent-light);
+      margin-bottom: 4px;
+    }
+
+    .timeline-role {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .timeline-company {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .timeline-company .location {
+      color: var(--text-dim);
+    }
+
+    .timeline-highlights {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .timeline-highlights li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .timeline-highlights li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 6px;
+      height: 1px;
+      background: var(--accent-light);
+    }
+
+    .timeline-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--gold);
+      background: var(--gold-soft);
+      border-radius: 3px;
+      margin-top: 12px;
+      margin-right: 6px;
+    }
+
+    /* ═══════════════════════════════════════
+       PROJECTS SECTION
+    ═══════════════════════════════════════ */
+    #projects {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .project-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      padding: 48px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .project-card:hover {
+      border-color: rgba(139, 34, 82, 0.3);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+    }
+
+    .project-icon {
+      width: 100%;
+      aspect-ratio: 16/10;
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card-hover));
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-icon::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent-soft), transparent, var(--gold-soft));
+      opacity: 0.5;
+    }
+
+    .project-icon svg {
+      position: relative;
+      z-index: 1;
+      width: 64px;
+      height: 64px;
+      color: var(--accent-light);
+      opacity: 0.7;
+    }
+
+    .project-type {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .project-name {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .project-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .project-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .project-stack span {
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .project-card + .project-card {
+      margin-top: 32px;
+    }
+
+    /* ═══════════════════════════════════════
+       EDUCATION & LANGUAGES
+    ═══════════════════════════════════════ */
+    .edu-lang-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    .subsection-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--gold);
+    }
+
+    .edu-card {
+      padding: 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 20px;
+      transition: border-color 0.3s;
+    }
+
+    .edu-card:hover {
+      border-color: rgba(139, 34, 82, 0.3);
+    }
+
+    .edu-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .edu-year {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--accent-light);
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .edu-degree {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .edu-school {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .lang-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lang-item:last-child {
+      border-bottom: none;
+    }
+
+    .lang-name {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+
+    .lang-level {
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 4px 14px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    .lang-native {
+      background: var(--accent-soft);
+      color: var(--accent-light);
+    }
+
+    .lang-professional {
+      background: var(--gold-soft);
+      color: var(--gold);
+    }
+
+    .lang-basic {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-dim);
+    }
+
+    /* ═══════════════════════════════════════
+       FOOTER / CONTACT
+    ═══════════════════════════════════════ */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 80px clamp(24px, 5vw, 64px);
+      text-align: center;
+    }
+
+    .footer-cta {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .footer-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+
+    .footer-link:hover {
+      color: var(--text-primary);
+      border-color: var(--accent-light);
+      background: var(--accent-soft);
+      transform: translateY(-2px);
+    }
+
+    .footer-link svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .footer-bottom {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .about-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .edu-lang-grid {
+        grid-template-columns: 1fr;
+        gap: 56px;
+      }
+
+      .project-card {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 32px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .nav-right > .lang-toggle {
+        display: none;
+      }
+
+      .nav-hamburger {
+        display: flex;
+      }
+
+      .section {
+        padding: 72px clamp(20px, 5vw, 40px);
+      }
+
+      .hero-photo-wrapper {
+        width: 130px;
+        height: 130px;
+      }
+
+      .hero-photo {
+        width: 130px;
+        height: 130px;
+      }
+
+      .timeline {
+        padding-left: 32px;
+      }
+
+      .timeline-dot {
+        left: -28px;
+        width: 13px;
+        height: 13px;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════ NAVIGATION ═══════════ -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">F<span>.</span>M</a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#about" data-i18n="nav.about">About</a></li>
+        <li><a href="#skills" data-i18n="nav.skills">Skills</a></li>
+        <li><a href="#experience" data-i18n="nav.experience">Experience</a></li>
+        <li><a href="#projects" data-i18n="nav.projects">Projects</a></li>
+        <li><a href="#education" data-i18n="nav.education">Education</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
+      </ul>
+      <div class="lang-toggle">
+        <button id="langEn" class="active" onclick="setLang('en')">EN</button>
+        <button id="langEs" onclick="setLang('es')">ES</button>
+      </div>
+      <div class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile overlay -->
+  <div class="nav-overlay" id="navOverlay">
+    <a href="#about" class="nav-overlay-link" data-i18n="nav.about">About</a>
+    <a href="#skills" class="nav-overlay-link" data-i18n="nav.skills">Skills</a>
+    <a href="#experience" class="nav-overlay-link" data-i18n="nav.experience">Experience</a>
+    <a href="#projects" class="nav-overlay-link" data-i18n="nav.projects">Projects</a>
+    <a href="#education" class="nav-overlay-link" data-i18n="nav.education">Education</a>
+    <a href="#contact" class="nav-overlay-link" data-i18n="nav.contact">Contact</a>
+    <div class="lang-toggle">
+      <button class="lang-en-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-es-btn" onclick="setLang('es')">ES</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-photo-wrapper">
+        <img src="profile.jpg" alt="Franco Mercado" class="hero-photo">
+      </div>
+      <p class="hero-greeting" data-i18n="hero.greeting">Hello, I'm</p>
+      <h1 class="hero-name">Franco <span class="accent">Mercado</span></h1>
+      <p class="hero-title" data-i18n="hero.title">Front-End Software Engineer</p>
+      <p class="hero-location">Buenos Aires, Argentina</p>
+      <div class="hero-ctas">
+        <a href="FRANCO_MERCADO_EN.pdf" class="btn btn-primary" id="cvDownloadBtn" download>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          <span data-i18n="hero.downloadCv">Download CV</span>
+        </a>
+        <a href="#contact" class="btn btn-outline">
+          <span data-i18n="hero.contact">Get in Touch</span>
+        </a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span data-i18n="hero.scroll">Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ ABOUT ═══════════ -->
+  <section class="section" id="about">
+    <div class="section-header reveal">
+      <p class="section-label" data-i18n="about.label">About Me</p>
+      <h2 class="section-title" data-i18n="about.title" data-i18n-html="true">Building interfaces<br>that people love</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="about-content reveal">
+      <div class="about-text">
+        <p data-i18n="about.p1">Front-End Engineer based in Buenos Aires, currently building fintech products at Mercado Libre. I enjoy turning complex problems into clean, performant interfaces that make a real difference for users.</p>
+        <p data-i18n="about.p2">Over the past 5+ years I've shipped apps from Buenos Aires to Sydney, working with teams of all sizes — from being the only dev on a project to collaborating with 10+ engineers at Mercado Libre. I care about clean code, fast interfaces, and helping the people around me grow.</p>
+        <p data-i18n="about.p3">When I'm not coding, I'm probably setting up emulators or modding a game I'll never actually end up playing.</p>
+      </div>
+      <div class="about-details">
+        <div class="about-detail-card">
+          <div class="about-detail-label" data-i18n="about.currentlyAt">Currently at</div>
+          <div class="about-detail-value">Mercado Libre</div>
+        </div>
+        <div class="about-detail-card">
+          <div class="about-detail-label" data-i18n="about.experience">Experience</div>
+          <div class="about-detail-value" data-i18n="about.experienceVal">5+ Years</div>
+        </div>
+        <div class="about-detail-card">
+          <div class="about-detail-label" data-i18n="about.specialization">Specialization</div>
+          <div class="about-detail-value">React & TypeScript</div>
+        </div>
+        <div class="about-detail-card">
+          <div class="about-detail-label" data-i18n="about.languages">Languages Spoken</div>
+          <div class="about-detail-value" data-i18n="about.languagesVal">4 Languages</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SKILLS ═══════════ -->
+  <section class="section" id="skills">
+    <div class="section-header reveal">
+      <p class="section-label" data-i18n="skills.label">Expertise</p>
+      <h2 class="section-title" data-i18n="skills.title">Skills & Technologies</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-group">
+        <div class="skill-group-title" data-i18n="skills.frontendCore">Frontend Core</div>
+        <div class="skill-tags">
+          <span class="skill-tag">React</span>
+          <span class="skill-tag">TypeScript</span>
+          <span class="skill-tag">JavaScript</span>
+          <span class="skill-tag">HTML</span>
+          <span class="skill-tag">CSS</span>
+          <span class="skill-tag">Next.js</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title" data-i18n="skills.stylingUi">Styling & UI</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Tailwind CSS</span>
+          <span class="skill-tag">SCSS / SASS</span>
+          <span class="skill-tag">Material UI</span>
+          <span class="skill-tag" data-i18n="skills.accessibility">Accessibility</span>
+          <span class="skill-tag">i18n</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title" data-i18n="skills.stateData">State & Data</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Redux Toolkit</span>
+          <span class="skill-tag">RTK Query</span>
+          <span class="skill-tag">Context API</span>
+          <span class="skill-tag">GraphQL</span>
+          <span class="skill-tag">Apollo Client</span>
+          <span class="skill-tag">REST APIs</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title" data-i18n="skills.backendInfra">Backend & Infra</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Node.js</span>
+          <span class="skill-tag">MongoDB</span>
+          <span class="skill-tag">SSR</span>
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">Agile / Scrum</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title" data-i18n="skills.testingMonitoring">Testing & Monitoring</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Jest</span>
+          <span class="skill-tag">React Testing Library</span>
+          <span class="skill-tag">Grafana</span>
+          <span class="skill-tag">Datadog</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title" data-i18n="skills.aiDev">AI Development</div>
+        <div class="skill-tags">
+          <span class="skill-tag">GitHub Copilot</span>
+          <span class="skill-tag">Cursor</span>
+          <span class="skill-tag">Claude Code</span>
+          <span class="skill-tag" data-i18n="skills.mcpIntegrations">MCP Integrations</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ EXPERIENCE ═══════════ -->
+  <section class="section" id="experience">
+    <div class="section-header reveal">
+      <p class="section-label" data-i18n="exp.label">Career</p>
+      <h2 class="section-title" data-i18n="exp.title">Work Experience</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="timeline">
+
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-dates" data-i18n="exp.meli.dates">Jul 2024 — Present</div>
+        <h3 class="timeline-role" data-i18n="exp.meli.role">Front-End Software Engineer</h3>
+        <p class="timeline-company">Mercado Libre <span class="location">— Buenos Aires, Argentina</span></p>
+        <ul class="timeline-highlights">
+          <li data-i18n="exp.meli.h1">Building React/TypeScript web applications with SSR for fintech transaction features serving ~5,000 daily users.</li>
+          <li data-i18n="exp.meli.h2">Key developer in a major front-end framework migration, overhauling the component library and design system across the entire application.</li>
+          <li data-i18n="exp.meli.h3">Developed Backend-for-Frontend (BFF) services for server-side API consumption.</li>
+          <li data-i18n="exp.meli.h4">Achieved over 90% test coverage using Jest and React Testing Library.</li>
+          <li data-i18n="exp.meli.h5">Daily use of AI-assisted development tools (GitHub Copilot, Cursor, Claude Code) with MCP integrations for debugging, testing, documentation, and task management.</li>
+          <li data-i18n="exp.meli.h6">Cross-functional collaboration within a team of 5 FE devs, 4 BE devs, and 2 product leads.</li>
+        </ul>
+        <span class="timeline-tag">React</span>
+        <span class="timeline-tag">TypeScript</span>
+        <span class="timeline-tag">SSR</span>
+        <span class="timeline-tag">Fintech</span>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-dates">Jun 2023 — Jun 2024</div>
+        <h3 class="timeline-role" data-i18n="exp.portant.role">React Developer</h3>
+        <p class="timeline-company">Portant <span class="location" data-i18n="exp.portant.location">— Sydney, Australia (Remote)</span></p>
+        <ul class="timeline-highlights">
+          <li data-i18n="exp.portant.h1">Implemented full internationalization (i18n) across the entire application, enabling multi-language support for a global user base.</li>
+          <li data-i18n="exp.portant.h2">Developed responsive web applications using React with TypeScript and Tailwind CSS.</li>
+          <li data-i18n="exp.portant.h3">Implemented state management with Redux and optimized component communication through Context API.</li>
+        </ul>
+        <span class="timeline-tag">React</span>
+        <span class="timeline-tag">i18n</span>
+        <span class="timeline-tag">Redux</span>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-dates" data-i18n="exp.gl.dates">Aug 2022 — Jun 2023</div>
+        <h3 class="timeline-role" data-i18n="exp.gl.role">React Developer</h3>
+        <p class="timeline-company">GlobalLogic <span class="location" data-i18n="exp.gl.location">— Buenos Aires, Argentina (Remote)</span></p>
+        <ul class="timeline-highlights">
+          <li data-i18n="exp.gl.h1">Achieved over 30% reduction in page load times through React memoization, image compression, and re-render optimization.</li>
+          <li data-i18n="exp.gl.h2">Mentored 3 junior developers through a challenging client engagement, enabling successful project delivery.</li>
+          <li data-i18n="exp.gl.h3">Integrated GraphQL APIs and managed state using Redux Toolkit and RTK Query.</li>
+        </ul>
+        <span class="timeline-tag">Performance</span>
+        <span class="timeline-tag">GraphQL</span>
+        <span class="timeline-tag">Mentoring</span>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-dates" data-i18n="exp.inventa.dates">Feb 2022 — Aug 2022</div>
+        <h3 class="timeline-role" data-i18n="exp.inventa.role">React Developer</h3>
+        <p class="timeline-company">Inventa <span class="location" data-i18n="exp.inventa.location">— S&atilde;o Paulo, Brazil (Remote)</span></p>
+        <ul class="timeline-highlights">
+          <li data-i18n="exp.inventa.h1">Key role in migrating the platform from a no-code builder to a custom React/Next.js application with server-side rendering.</li>
+          <li data-i18n="exp.inventa.h2">Implemented semantic HTML for SEO optimization and responsive design with Tailwind CSS.</li>
+        </ul>
+        <span class="timeline-tag">Next.js</span>
+        <span class="timeline-tag" data-i18n="exp.migrationTag">Migration</span>
+        <span class="timeline-tag">SEO</span>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-dates" data-i18n="exp.invasor.dates">May 2021 — Aug 2022</div>
+        <h3 class="timeline-role" data-i18n="exp.invasor.role">Full Stack Developer</h3>
+        <p class="timeline-company">Invasor <span class="location" data-i18n="exp.invasor.location">— Buenos Aires, Argentina (Remote)</span></p>
+        <ul class="timeline-highlights">
+          <li data-i18n="exp.invasor.h1">Sole developer — architected and built the entire SPA from the ground up using React with Material UI.</li>
+          <li data-i18n="exp.invasor.h2">Designed and implemented the back-end GraphQL API with Node.js, querying MongoDB via Mongoose.</li>
+        </ul>
+        <span class="timeline-tag">React</span>
+        <span class="timeline-tag">Node.js</span>
+        <span class="timeline-tag">GraphQL</span>
+        <span class="timeline-tag">MongoDB</span>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-dates">Mar 2020 — May 2021</div>
+        <h3 class="timeline-role" data-i18n="exp.exisoft.role">Integrations Developer</h3>
+        <p class="timeline-company">Exisoft <span class="location" data-i18n="exp.exisoft.location">— Buenos Aires, Argentina (Remote)</span></p>
+        <ul class="timeline-highlights">
+          <li data-i18n="exp.exisoft.h1">Developed and implemented integration solutions using IBM's ESB Integration Bus.</li>
+          <li data-i18n="exp.exisoft.h2">Enriched data obtained from relational databases, SOAP, and REST services, modeling it to client specifications.</li>
+        </ul>
+        <span class="timeline-tag">IBM ESB</span>
+        <span class="timeline-tag">SOAP</span>
+        <span class="timeline-tag">REST</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════ PROJECTS ═══════════ -->
+  <section class="section" id="projects">
+    <div class="section-header reveal">
+      <p class="section-label" data-i18n="projects.label">Projects</p>
+      <h2 class="section-title" data-i18n="projects.title">Things I've Built</h2>
+      <div class="section-divider"></div>
+    </div>
+    <a href="https://xat.moe" target="_blank" rel="noopener" class="project-card reveal" style="text-decoration: none; color: inherit;">
+      <div class="project-icon">
+        <img src="project_1.jpg" alt="Friends' Blog — xat.moe" style="width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1;">
+      </div>
+      <div>
+        <p class="project-type" data-i18n="projects.personalProject">Personal Project</p>
+        <h3 class="project-name" data-i18n="projects.blogName">Friends' Blog</h3>
+        <p class="project-desc" data-i18n="projects.blogDesc">A content-driven blog built for friends using a modern JAMstack architecture. Features a headless CMS for easy content management, static site generation for performance, and React components for interactive elements.</p>
+        <div class="project-stack">
+          <span>Astro</span>
+          <span>React</span>
+          <span>Sanity CMS</span>
+        </div>
+      </div>
+    </a>
+    <a href="https://github.com/MercadoFranco/meli-test" target="_blank" rel="noopener" class="project-card reveal" style="text-decoration: none; color: inherit;">
+      <div class="project-icon">
+        <img src="project_2.jpg" alt="Mercado Libre Search" style="width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1;">
+      </div>
+      <div>
+        <p class="project-type" data-i18n="projects.technicalChallenge">Technical Challenge</p>
+        <h3 class="project-name" data-i18n="projects.meliName">Mercado Libre Search</h3>
+        <p class="project-desc" data-i18n="projects.meliDesc">A full-stack search application replicating Mercado Libre's product search and detail screens. Features a Node.js BFF layer for API data transformation, RTK Query for efficient data fetching and caching, and skeleton loading states.</p>
+        <div class="project-stack">
+          <span>React</span>
+          <span>Node.js</span>
+          <span>Redux Toolkit</span>
+          <span>SASS</span>
+        </div>
+      </div>
+    </a>
+    <a href="https://github.com/MercadoFranco/picture-of-the-day-nasa" target="_blank" rel="noopener" class="project-card reveal" style="text-decoration: none; color: inherit;">
+      <div class="project-icon">
+        <img src="project_3.jpg" alt="NASA Picture of the Day" style="width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1;">
+      </div>
+      <div>
+        <p class="project-type" data-i18n="projects.technicalChallenge">Technical Challenge</p>
+        <h3 class="project-name" data-i18n="projects.nasaName">NASA Picture of the Day</h3>
+        <p class="project-desc" data-i18n="projects.nasaDesc">A responsive gallery app consuming NASA's Astronomy Picture of the Day API. Browse the last 30 daily images, save favorites with local persistence, share via native Web Share API, and look up any date back to 1995.</p>
+        <div class="project-stack">
+          <span>React</span>
+          <span>TypeScript</span>
+          <span>Tailwind CSS</span>
+          <span>Vite</span>
+        </div>
+      </div>
+    </a>
+  </section>
+
+  <!-- ═══════════ EDUCATION & LANGUAGES ═══════════ -->
+  <section class="section" id="education">
+    <div class="section-header reveal">
+      <p class="section-label" data-i18n="edu.label">Background</p>
+      <h2 class="section-title" data-i18n="edu.title">Education & Languages</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="edu-lang-grid reveal">
+      <div>
+        <h3 class="subsection-title" data-i18n="edu.educationTitle">Education</h3>
+        <div class="edu-card">
+          <p class="edu-year" data-i18n="edu.uadeYear">Expected 2029 — 2nd year in progress</p>
+          <h4 class="edu-degree" data-i18n="edu.uadeDegree">Computer Science Engineering</h4>
+          <p class="edu-school">Universidad Argentina De La Empresa (UADE)</p>
+        </div>
+        <div class="edu-card">
+          <p class="edu-year" data-i18n="edu.krauseYear">Graduated 2019</p>
+          <h4 class="edu-degree" data-i18n="edu.krauseDegree">Technical High School Diploma</h4>
+          <p class="edu-school">Escuela T&eacute;cnica Otto Krause</p>
+        </div>
+      </div>
+      <div>
+        <h3 class="subsection-title" data-i18n="edu.languagesTitle">Languages</h3>
+        <div class="lang-item">
+          <span class="lang-name" data-i18n="edu.spanish">Spanish</span>
+          <span class="lang-level lang-native" data-i18n="edu.native">Native</span>
+        </div>
+        <div class="lang-item">
+          <span class="lang-name" data-i18n="edu.english">English</span>
+          <span class="lang-level lang-professional" data-i18n="edu.fullProfessional">Full Professional</span>
+        </div>
+        <div class="lang-item">
+          <span class="lang-name" data-i18n="edu.portuguese">Portuguese</span>
+          <span class="lang-level lang-professional" data-i18n="edu.professional">Professional</span>
+        </div>
+        <div class="lang-item">
+          <span class="lang-name" data-i18n="edu.japanese">Japanese</span>
+          <span class="lang-level lang-basic" data-i18n="edu.basic">Basic</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FOOTER / CONTACT ═══════════ -->
+  <footer class="footer" id="contact">
+    <div class="reveal">
+      <p class="section-label" style="margin-bottom: 16px;" data-i18n="footer.label">Contact</p>
+      <h2 class="footer-cta" data-i18n="footer.cta">Let's work together</h2>
+      <p class="footer-subtitle" data-i18n="footer.subtitle">I'm always open to new opportunities, interesting projects, and connecting with fellow developers.</p>
+      <div class="footer-links">
+        <a href="mailto:franco.emanuel.mercado@gmail.com" class="footer-link">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+          Email
+        </a>
+        <a href="https://www.linkedin.com/in/f-mercado" target="_blank" rel="noopener" class="footer-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://github.com/MercadoFranco" target="_blank" rel="noopener" class="footer-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+      <p class="footer-bottom" data-i18n="footer.copyright">&copy; 2026 Franco Mercado. Built with care.</p>
+    </div>
+  </footer>
+
+  <!-- ═══════════ SCRIPTS ═══════════ -->
+  <script>
+    // ── Translations ──
+    const translations = {
+      en: {
+        'nav.about': 'About',
+        'nav.skills': 'Skills',
+        'nav.experience': 'Experience',
+        'nav.projects': 'Projects',
+        'nav.education': 'Education',
+        'nav.contact': 'Contact',
+        'hero.greeting': "Hello, I'm",
+        'hero.title': 'Front-End Software Engineer',
+        'hero.downloadCv': 'Download CV',
+        'hero.contact': 'Get in Touch',
+        'hero.scroll': 'Scroll',
+        'about.label': 'About Me',
+        'about.title': 'Building interfaces<br>that people love',
+        'about.p1': 'Front-End Engineer based in Buenos Aires, currently building fintech products at Mercado Libre. I enjoy turning complex problems into clean, performant interfaces that make a real difference for users.',
+        'about.p2': "Over the past 5+ years I've shipped apps from Buenos Aires to Sydney, working with teams of all sizes — from being the only dev on a project to collaborating with 10+ engineers at Mercado Libre. I care about clean code, fast interfaces, and helping the people around me grow.",
+        'about.p3': "When I'm not coding, I'm probably setting up emulators or modding a game I'll never actually end up playing.",
+        'about.currentlyAt': 'Currently at',
+        'about.experience': 'Experience',
+        'about.experienceVal': '5+ Years',
+        'about.specialization': 'Specialization',
+        'about.languages': 'Languages Spoken',
+        'about.languagesVal': '4 Languages',
+        'skills.label': 'Expertise',
+        'skills.title': 'Skills & Technologies',
+        'skills.frontendCore': 'Frontend Core',
+        'skills.stylingUi': 'Styling & UI',
+        'skills.stateData': 'State & Data',
+        'skills.backendInfra': 'Backend & Infra',
+        'skills.testingMonitoring': 'Testing & Monitoring',
+        'skills.aiDev': 'AI Development',
+        'skills.accessibility': 'Accessibility',
+        'skills.mcpIntegrations': 'MCP Integrations',
+        'exp.label': 'Career',
+        'exp.title': 'Work Experience',
+        'exp.meli.dates': 'Jul 2024 — Present',
+        'exp.meli.role': 'Front-End Software Engineer',
+        'exp.meli.h1': 'Building React/TypeScript web applications with SSR for fintech transaction features serving ~5,000 daily users.',
+        'exp.meli.h2': 'Key developer in a major front-end framework migration, overhauling the component library and design system across the entire application.',
+        'exp.meli.h3': 'Developed Backend-for-Frontend (BFF) services for server-side API consumption.',
+        'exp.meli.h4': 'Achieved over 90% test coverage using Jest and React Testing Library.',
+        'exp.meli.h5': 'Daily use of AI-assisted development tools (GitHub Copilot, Cursor, Claude Code) with MCP integrations for debugging, testing, documentation, and task management.',
+        'exp.meli.h6': 'Cross-functional collaboration within a team of 5 FE devs, 4 BE devs, and 2 product leads.',
+        'exp.portant.role': 'React Developer',
+        'exp.portant.location': '— Sydney, Australia (Remote)',
+        'exp.portant.h1': 'Implemented full internationalization (i18n) across the entire application, enabling multi-language support for a global user base.',
+        'exp.portant.h2': 'Developed responsive web applications using React with TypeScript and Tailwind CSS.',
+        'exp.portant.h3': 'Implemented state management with Redux and optimized component communication through Context API.',
+        'exp.gl.dates': 'Aug 2022 — Jun 2023',
+        'exp.gl.role': 'React Developer',
+        'exp.gl.location': '— Buenos Aires, Argentina (Remote)',
+        'exp.gl.h1': 'Achieved over 30% reduction in page load times through React memoization, image compression, and re-render optimization.',
+        'exp.gl.h2': 'Mentored 3 junior developers through a challenging client engagement, enabling successful project delivery.',
+        'exp.gl.h3': 'Integrated GraphQL APIs and managed state using Redux Toolkit and RTK Query.',
+        'exp.inventa.dates': 'Feb 2022 — Aug 2022',
+        'exp.inventa.role': 'React Developer',
+        'exp.inventa.location': '— São Paulo, Brazil (Remote)',
+        'exp.inventa.h1': 'Key role in migrating the platform from a no-code builder to a custom React/Next.js application with server-side rendering.',
+        'exp.inventa.h2': 'Implemented semantic HTML for SEO optimization and responsive design with Tailwind CSS.',
+        'exp.migrationTag': 'Migration',
+        'exp.invasor.dates': 'May 2021 — Aug 2022',
+        'exp.invasor.role': 'Full Stack Developer',
+        'exp.invasor.location': '— Buenos Aires, Argentina (Remote)',
+        'exp.invasor.h1': 'Sole developer — architected and built the entire SPA from the ground up using React with Material UI.',
+        'exp.invasor.h2': 'Designed and implemented the back-end GraphQL API with Node.js, querying MongoDB via Mongoose.',
+        'exp.exisoft.role': 'Integrations Developer',
+        'exp.exisoft.location': '— Buenos Aires, Argentina (Remote)',
+        'exp.exisoft.h1': "Developed and implemented integration solutions using IBM's ESB Integration Bus.",
+        'exp.exisoft.h2': 'Enriched data obtained from relational databases, SOAP, and REST services, modeling it to client specifications.',
+        'projects.label': 'Projects',
+        'projects.title': "Things I've Built",
+        'projects.personalProject': 'Personal Project',
+        'projects.blogName': "Friends' Blog",
+        'projects.blogDesc': 'A content-driven blog built for friends using a modern JAMstack architecture. Features a headless CMS for easy content management, static site generation for performance, and React components for interactive elements.',
+        'projects.technicalChallenge': 'Technical Challenge',
+        'projects.meliName': 'Mercado Libre Search',
+        'projects.meliDesc': 'A full-stack search application replicating Mercado Libre\'s product search and detail screens. Features a Node.js BFF layer for API data transformation, RTK Query for efficient data fetching and caching, and skeleton loading states.',
+        'projects.nasaName': 'NASA Picture of the Day',
+        'projects.nasaDesc': 'A responsive gallery app consuming NASA\'s Astronomy Picture of the Day API. Browse the last 30 daily images, save favorites with local persistence, share via native Web Share API, and look up any date back to 1995.',
+        'edu.label': 'Background',
+        'edu.title': 'Education & Languages',
+        'edu.educationTitle': 'Education',
+        'edu.uadeYear': 'Expected 2029 — 2nd year in progress',
+        'edu.uadeDegree': 'Computer Science Engineering',
+        'edu.krauseYear': 'Graduated 2019',
+        'edu.krauseDegree': 'Technical High School Diploma',
+        'edu.languagesTitle': 'Languages',
+        'edu.spanish': 'Spanish',
+        'edu.native': 'Native',
+        'edu.english': 'English',
+        'edu.fullProfessional': 'Full Professional',
+        'edu.portuguese': 'Portuguese',
+        'edu.professional': 'Professional',
+        'edu.japanese': 'Japanese',
+        'edu.basic': 'Basic',
+        'footer.label': 'Contact',
+        'footer.cta': "Let's work together",
+        'footer.subtitle': "I'm always open to new opportunities, interesting projects, and connecting with fellow developers.",
+        'footer.copyright': '© 2026 Franco Mercado. Built with care.'
+      },
+      es: {
+        'nav.about': 'Sobre mí',
+        'nav.skills': 'Habilidades',
+        'nav.experience': 'Experiencia',
+        'nav.projects': 'Proyectos',
+        'nav.education': 'Educación',
+        'nav.contact': 'Contacto',
+        'hero.greeting': 'Hola, soy',
+        'hero.title': 'Ingeniero de Software Front-End',
+        'hero.downloadCv': 'Descargar CV',
+        'hero.contact': 'Contactame',
+        'hero.scroll': 'Scroll',
+        'about.label': 'Sobre mí',
+        'about.title': 'Construyendo interfaces<br>que la gente ama',
+        'about.p1': 'Ingeniero Front-End basado en Buenos Aires, actualmente desarrollando productos fintech en Mercado Libre. Disfruto convertir problemas complejos en interfaces limpias y performantes que hacen una diferencia real para los usuarios.',
+        'about.p2': 'En los últimos 5+ años envié apps desde Buenos Aires hasta Sídney, trabajando con equipos de todos los tamaños — desde ser el único dev en un proyecto hasta colaborar con más de 10 devs en Mercado Libre. Me importa el código limpio, las interfaces rápidas, y ayudar a crecer a la gente que me rodea.',
+        'about.p3': 'Cuando no estoy programando, probablemente estoy configurando emuladores o moddeando un juego que nunca voy a terminar jugando.',
+        'about.currentlyAt': 'Actualmente en',
+        'about.experience': 'Experiencia',
+        'about.experienceVal': '5+ Años',
+        'about.specialization': 'Especialización',
+        'about.languages': 'Idiomas',
+        'about.languagesVal': '4 Idiomas',
+        'skills.label': 'Expertise',
+        'skills.title': 'Habilidades y Tecnologías',
+        'skills.frontendCore': 'Frontend Core',
+        'skills.stylingUi': 'Estilos y UI',
+        'skills.stateData': 'Estado y Datos',
+        'skills.backendInfra': 'Backend e Infra',
+        'skills.testingMonitoring': 'Testing y Monitoreo',
+        'skills.aiDev': 'Desarrollo con IA',
+        'skills.accessibility': 'Accesibilidad',
+        'skills.mcpIntegrations': 'Integraciones MCP',
+        'exp.label': 'Carrera',
+        'exp.title': 'Experiencia Laboral',
+        'exp.meli.dates': 'Jul 2024 — Presente',
+        'exp.meli.role': 'Ingeniero de Software Front-End',
+        'exp.meli.h1': 'Desarrollo de aplicaciones web React/TypeScript con SSR para funcionalidades fintech de transacciones con ~5.000 usuarios diarios.',
+        'exp.meli.h2': 'Desarrollador clave en una importante migración front-end de framework, renovando la biblioteca de componentes y el sistema de diseño de toda la aplicación.',
+        'exp.meli.h3': 'Desarrollo de servicios Backend-for-Frontend (BFF) para consumo de APIs del lado del servidor.',
+        'exp.meli.h4': 'Cobertura de tests superior al 90% utilizando Jest y React Testing Library.',
+        'exp.meli.h5': 'Uso diario de herramientas de desarrollo asistido por IA (GitHub Copilot, Cursor, Claude Code) con integraciones MCP para debugging, testing, documentación y gestión de tareas.',
+        'exp.meli.h6': 'Colaboración multidisciplinaria en un equipo de 5 devs front-end, 4 devs back-end y 2 líderes de producto.',
+        'exp.portant.role': 'Desarrollador React',
+        'exp.portant.location': '— Sídney, Australia (Remoto)',
+        'exp.portant.h1': 'Implementación completa de internacionalización (i18n) en toda la aplicación, habilitando soporte multi-idioma para una base de usuarios global.',
+        'exp.portant.h2': 'Desarrollo de aplicaciones web responsive utilizando React con TypeScript y Tailwind CSS.',
+        'exp.portant.h3': 'Implementación de soluciones de manejo de estado con Redux y optimización de la comunicación entre componentes mediante Context API.',
+        'exp.gl.dates': 'Ago 2022 — Jun 2023',
+        'exp.gl.role': 'Desarrollador React',
+        'exp.gl.location': '— Buenos Aires, Argentina (Remoto)',
+        'exp.gl.h1': 'Reducción superior al 30% en tiempos de carga mediante memoización en React, compresión de imágenes y optimización de re-renders.',
+        'exp.gl.h2': 'Mentoría de 3 desarrolladores junior durante un proyecto desafiante con el cliente, logrando la entrega exitosa del proyecto.',
+        'exp.gl.h3': 'Integración de APIs GraphQL y gestión del estado mediante Redux Toolkit y RTK Query.',
+        'exp.inventa.dates': 'Feb 2022 — Ago 2022',
+        'exp.inventa.role': 'Desarrollador React',
+        'exp.inventa.location': '— São Paulo, Brasil (Remoto)',
+        'exp.inventa.h1': 'Participación clave en la migración de la plataforma desde un constructor web no-code hacia una aplicación React/Next.js con server-side rendering.',
+        'exp.inventa.h2': 'Implementación de HTML semántico para SEO y diseño responsive con Tailwind CSS.',
+        'exp.migrationTag': 'Migración',
+        'exp.invasor.dates': 'May 2021 — Ago 2022',
+        'exp.invasor.role': 'Desarrollador Full Stack',
+        'exp.invasor.location': '— Buenos Aires, Argentina (Remoto)',
+        'exp.invasor.h1': 'Único desarrollador del proyecto, diseñando y construyendo la SPA completa desde cero utilizando React con Material UI.',
+        'exp.invasor.h2': 'Diseño e implementación de la API GraphQL del back-end con Node.js, consultando una base de datos MongoDB mediante Mongoose.',
+        'exp.exisoft.role': 'Desarrollador de Integraciones',
+        'exp.exisoft.location': '— Buenos Aires, Argentina (Remoto)',
+        'exp.exisoft.h1': 'Desarrollo e implementación de soluciones de integración utilizando IBM ESB Integration Bus.',
+        'exp.exisoft.h2': 'Enriquecimiento de datos obtenidos de bases de datos relacionales, servicios SOAP y REST, modelándolos según las especificaciones del cliente.',
+        'projects.label': 'Proyectos',
+        'projects.title': 'Cosas que construí',
+        'projects.personalProject': 'Proyecto Personal',
+        'projects.blogName': 'Blog de Amigos',
+        'projects.blogDesc': 'Un blog orientado a contenido construido para amigos usando una arquitectura JAMstack moderna. Incluye un CMS headless para gestión de contenido sencilla, generación de sitio estático para rendimiento, y componentes React para elementos interactivos.',
+        'projects.technicalChallenge': 'Desafío Técnico',
+        'projects.meliName': 'Buscador de Mercado Libre',
+        'projects.meliDesc': 'Una aplicación full-stack de búsqueda que replica las pantallas de búsqueda y detalle de productos de Mercado Libre. Incluye una capa BFF en Node.js para transformación de datos, RTK Query para fetching y caching eficiente, y estados de carga con skeletons.',
+        'projects.nasaName': 'Foto del Día de la NASA',
+        'projects.nasaDesc': 'Una galería responsive que consume la API de Astronomía Foto del Día de la NASA. Permite explorar las últimas 30 imágenes diarias, guardar favoritos con persistencia local, compartir mediante la Web Share API nativa, y buscar cualquier fecha desde 1995.',
+        'edu.label': 'Formación',
+        'edu.title': 'Educación e Idiomas',
+        'edu.educationTitle': 'Educación',
+        'edu.uadeYear': 'Esperada 2029 — 2do año en curso',
+        'edu.uadeDegree': 'Ingeniería en Informática',
+        'edu.krauseYear': 'Graduado 2019',
+        'edu.krauseDegree': 'Título Técnico Secundario',
+        'edu.languagesTitle': 'Idiomas',
+        'edu.spanish': 'Español',
+        'edu.native': 'Nativo',
+        'edu.english': 'Inglés',
+        'edu.fullProfessional': 'Profesional Completo',
+        'edu.portuguese': 'Portugués',
+        'edu.professional': 'Profesional',
+        'edu.japanese': 'Japonés',
+        'edu.basic': 'Básico',
+        'footer.label': 'Contacto',
+        'footer.cta': 'Trabajemos juntos',
+        'footer.subtitle': 'Siempre estoy abierto a nuevas oportunidades, proyectos interesantes, y conectar con otros desarrolladores.',
+        'footer.copyright': '© 2026 Franco Mercado. Hecho con cariño.'
+      }
+    };
+
+    let currentLang = localStorage.getItem('lang') || 'en';
+
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      document.documentElement.lang = lang;
+
+      // Update all translatable elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const text = translations[lang][key];
+        if (text) {
+          if (el.getAttribute('data-i18n-html') === 'true') {
+            el.innerHTML = text;
+          } else {
+            el.textContent = text;
+          }
+        }
+      });
+
+      // Update CV download link
+      const cvBtn = document.getElementById('cvDownloadBtn');
+      if (cvBtn) {
+        cvBtn.href = lang === 'es' ? 'FRANCO_MERCADO_ES.pdf' : 'FRANCO_MERCADO_EN.pdf';
+      }
+
+      // Update toggle buttons
+      document.querySelectorAll('.lang-toggle button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      if (lang === 'en') {
+        document.getElementById('langEn').classList.add('active');
+        document.querySelectorAll('.lang-en-btn').forEach(b => b.classList.add('active'));
+      } else {
+        document.getElementById('langEs').classList.add('active');
+        document.querySelectorAll('.lang-es-btn').forEach(b => b.classList.add('active'));
+      }
+    }
+
+    // Apply saved language on load
+    if (currentLang !== 'en') {
+      setLang(currentLang);
+    }
+
+    // ── Nav scroll effect ──
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ── Hamburger menu ──
+    const hamburger = document.getElementById('hamburger');
+    const overlay = document.getElementById('navOverlay');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      overlay.classList.toggle('active');
+      document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : '';
+    });
+
+    document.querySelectorAll('.nav-overlay a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // ── Scroll reveal ──
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
